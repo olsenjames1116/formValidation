@@ -72,6 +72,10 @@ function showPasswordError() {
     password.reportValidity();
 }
 
+function showConfirmPasswordError() {
+    confirmPassword.setCustomValidity('Passwords must match');
+}
+
 function showZipError() {
 
 }
@@ -88,8 +92,14 @@ password.addEventListener('input', () => {
     }
 });
 
-confirmPassword.addEventListener('change', () => {
-    console.log('confirm password');
+confirmPassword.addEventListener('input', () => {
+    if (password.value !== confirmPassword.value) {
+        showConfirmPasswordError();
+    } else {
+        confirmPassword.setCustomValidity('');
+    }
+
+    confirmPassword.reportValidity();
 });
 
 zip.addEventListener('change', () => {
@@ -105,10 +115,11 @@ submitButton.addEventListener('click', () => {
         if (!email.checkValidity()) {
             showEmailError();
         } else if (!validateConstraint() || !password.checkValidity()) {
-            console.log(!password.checkValidity());
-            console.log(!validateConstraint());
             showPasswordError();
-        } else if (!zip.checkValidity()) {
+        } else if (password.value !== confirmPassword.value) {
+            showConfirmPasswordError();
+        }
+        else if (!zip.checkValidity()) {
             showZipError();
         }
     }
