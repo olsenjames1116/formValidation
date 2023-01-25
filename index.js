@@ -1,37 +1,17 @@
 const form = document.querySelector('form');
 const email = document.querySelector('input#email');
-const emailError = document.querySelector('input#email+span.error');
 const password = document.querySelector('input#password');
-const passwordError = document.querySelector('input#password+span.error');
 const confirmPassword = document.querySelector('input#confirmPassword');
-const confirmPasswordError = document.querySelector('input#confirmPassword+span.error');
 const country = document.querySelector('select#country');
 const zip = document.querySelector('input#zip');
-const zipError = document.querySelector('input#zip+span.error');
 const submitButton = document.querySelector('form>div:last-child>button:first-child');
 const clearButton = document.querySelector('form>div:last-child>button:last-child');
-const constraints = {
-    uppercase: [
-        '[A-Z]+',
-        'Passwords must contain at least one uppercase letter',
-    ],
-    lowercase: [
-        '[a-z]+',
-        'Passwords must contain at least one lowercase letter',
-    ],
-    number: [
-        '[0-9]+',
-        'Passwords must contain at least one number',
-    ],
-    numbers: [
-        '[0-9]{5}',
-        'Zip codes must only contain numbers',
-    ],
-    symbols: [
-        '[^A-Za-z0-9]',
-        'Passwords must contain at least one allowed symbol',
-    ],
-}
+const uppercaseConstraint = new RegExp('[A-Z]+');
+const lowercaseConstraint = new RegExp('[a-z]+');
+const numberConstraint = new RegExp('[0-9]+');
+const symbolConstraint = new RegExp('^[A-Za-z0-9]*$');
+const zipConstraint = new RegExp('[0-9]{5}');
+let error;
 
 function clearInput() {
     email.value = '';
@@ -42,34 +22,70 @@ function clearInput() {
 
 function showEmailError() {
     if (email.validity.valueMissing) {
-        emailError.textContent = 'Please enter an email address';
-    } else {
-        emailError.textContent = 'Please enter the correct format';
+        email.setCustomValidity('Please enter an email address')
+    } else if (email.validity.typeMismatch) {
+        email.setCustomValidity('Please enter an email address in the following format: name@website.com');
     }
+    else {
+        email.setCustomValidity('');
+    }
+
+    email.reportValidity();
 }
 
-function showPasswordError () {
-    if (password.validity.valueMissing) {
-        passwordError.textContent = 'Please enter a password';
-    } else if (password.validity.tooShort) {
-        passwordError.textContent = 'Password must be a minimum of 8 characters';
+function validateConstraint() {
+    if (!uppercaseConstraint.test(password.value)) {
+        error = 'uppercase';
+        return false;
+    } else if (!lowercaseConstraint.test(password.value)) {
+        error = 'lowercase';
+        return false;
+    } else if (!numberConstraint.test(password.value)) {
+        error = 'number';
+        return false;
+    } else if (symbolConstraint.test(password.value)){
+        error = 'symbol';
+        return false;
     }
+
+    error = '';
+    return true;
+}
+
+function showPasswordError() {
+    if (password.validity.valueMissing) {
+        password.setCustomValidity('Please enter a password');
+    } else if (password.validity.tooShort) {
+        password.setCustomValidity('Password must be a minimum of 8 characters');
+    } else if (error === 'uppercase') {
+        password.setCustomValidity('Passwords must include at least one uppercase letter');
+    } else if (error === 'lowercase') {
+        password.setCustomValidity('Passwords must include at least one lowercase letter');
+    } else if (error === 'number') {
+        password.setCustomValidity('Passwords must include at least one number');
+    } else if (error === 'symbol') {
+        password.setCustomValidity('Passwords must include at least one of the following symbols: ~`! @#$%^&*()_-+={[}]|\:;"\'<,>.?/');
+    } else {
+        password.setCustomValidity('');
+    }
+
+    password.reportValidity();
 }
 
 function showZipError() {
-    console.log('zip error');
+
 }
 
-email.addEventListener('change', () => {
+email.addEventListener('input', () => {
     if (!email.checkValidity()) {
         showEmailError();
-    } else {
-        emailError.textContent = '';
     }
 });
 
-password.addEventListener('change', () => {
-    console.log('password');
+password.addEventListener('input', () => {
+    if (!validateConstraint() || !password.checkValidity()) {
+        showPasswordError();
+    }
 });
 
 confirmPassword.addEventListener('change', () => {
@@ -77,7 +93,7 @@ confirmPassword.addEventListener('change', () => {
 });
 
 zip.addEventListener('change', () => {
-    console.log('zip');
+    showZipError();
 });
 
 submitButton.addEventListener('click', () => {
@@ -88,11 +104,11 @@ submitButton.addEventListener('click', () => {
     else{
         if (!email.checkValidity()) {
             showEmailError();
-        }
-        if (!password.checkValidity() || !password.checkValidity()) {
+        } else if (!validateConstraint() || !password.checkValidity()) {
+            console.log(!password.checkValidity());
+            console.log(!validateConstraint());
             showPasswordError();
-        }
-        if (!zip.checkValidity()) {
+        } else if (!zip.checkValidity()) {
             showZipError();
         }
     }
