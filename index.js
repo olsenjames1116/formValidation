@@ -10,7 +10,6 @@ const uppercaseConstraint = new RegExp('[A-Z]+');
 const lowercaseConstraint = new RegExp('[a-z]+');
 const numberConstraint = new RegExp('[0-9]+');
 const symbolConstraint = new RegExp('^[A-Za-z0-9]*$');
-const zipConstraint = new RegExp('[0-9]{5}');
 let error;
 
 function clearInput() {
@@ -43,7 +42,7 @@ function validateConstraint() {
     } else if (!numberConstraint.test(password.value)) {
         error = 'number';
         return false;
-    } else if (symbolConstraint.test(password.value)){
+    } else if (symbolConstraint.test(password.value)) {
         error = 'symbol';
         return false;
     }
@@ -77,7 +76,17 @@ function showConfirmPasswordError() {
 }
 
 function showZipError() {
+    if (zip.validity.valueMissing) {
+        zip.setCustomValidity('Please enter a zip code');
+    } else if (zip.validity.tooShort) {
+        zip.setCustomValidity('Zip code must be 5 digits');
+    } else if (zip.validity.patternMismatch) {
+        zip.setCustomValidity('Zip code must only contain numbers');
+    } else {
+        zip.setCustomValidity('');
+    }
 
+    zip.reportValidity()
 }
 
 email.addEventListener('input', () => {
@@ -102,8 +111,10 @@ confirmPassword.addEventListener('input', () => {
     confirmPassword.reportValidity();
 });
 
-zip.addEventListener('change', () => {
-    showZipError();
+zip.addEventListener('input', () => {
+    if (!zip.checkValidity()) {
+        showZipError();
+    }
 });
 
 submitButton.addEventListener('click', () => {
