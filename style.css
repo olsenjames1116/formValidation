@@ -1,0 +1,95 @@
+body{
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url("./background.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+form{
+    margin-top: auto;
+    background-color: rgb(233, 231, 231);
+    box-shadow: 0 0 50px #ccc;
+    font-size: 1.5rem;
+    width: 40%;
+    height: 75vh;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+form>p:first-child{
+    margin-bottom: 10px;
+}
+
+p{
+    margin: 0;
+}
+
+form>div{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+label{
+    font-weight: bold;
+}
+
+input{
+    border: 0;
+}
+
+input:invalid{
+    border: 1px solid red;
+    background-color: rgb(254, 117, 117);
+}
+
+input:valid{
+    border: 1px solid green;
+    background-color: rgb(156, 154, 255);
+}
+
+input, select{
+    background-color: rgb(156, 154, 255);
+    font-size: 1.2rem;
+}
+
+ul{
+    margin: 0;
+}
+
+form>div:last-child{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+button{
+    background-color: rgb(156, 154, 255);
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    width: 100px;
+}
+
+footer{
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    background-color: rgb(250, 250, 250);
+}
+
+a{
+    text-decoration: none;
+    color: rgb(156, 154, 255);
+}
