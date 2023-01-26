@@ -6,9 +6,13 @@ const country = document.querySelector('select#country');
 const zip = document.querySelector('input#zip');
 const submitButton = document.querySelector('form>div:last-child>button:first-child');
 const clearButton = document.querySelector('form>div:last-child>button:last-child');
+// Regex to check if there is at least one uppercase letter in a string
 const uppercaseConstraint = new RegExp('[A-Z]+');
+// Regex to check if there is at least one lowercase letter in a string
 const lowercaseConstraint = new RegExp('[a-z]+');
+// Regex to check if there is at least one number in a string
 const numberConstraint = new RegExp('[0-9]+');
+// Regex to check if a string only contains numbers and letters
 const symbolConstraint = new RegExp('^[A-Za-z0-9]*$');
 let error;
 
@@ -19,7 +23,9 @@ function clearInput() {
     zip.value = '';
 }
 
+// Reached after a validity issue has been found in the email input
 function showEmailError() {
+    // Runs through all the possible validity issues and resets the validity if there are none
     if (email.validity.valueMissing) {
         email.setCustomValidity('Please enter an email address')
     } else if (email.validity.typeMismatch) {
@@ -32,6 +38,7 @@ function showEmailError() {
     email.reportValidity();
 }
 
+// Sets validity using regex on passwords and specifies the validity concern under the error variable
 function validateConstraint() {
     if (!uppercaseConstraint.test(password.value)) {
         error = 'uppercase';
@@ -51,7 +58,9 @@ function validateConstraint() {
     return true;
 }
 
+// Reached after a validity issue has been found in the password input
 function showPasswordError() {
+    // Runs through all the possible validity issues and resets the validity if there are none
     if (password.validity.valueMissing) {
         password.setCustomValidity('Please enter a password');
     } else if (password.validity.tooShort) {
@@ -71,11 +80,14 @@ function showPasswordError() {
     password.reportValidity();
 }
 
+// Reached after a validity issue has been found in the password confirmation input
 function showConfirmPasswordError() {
     confirmPassword.setCustomValidity('Passwords must match');
 }
 
+// Reached after a validity issue has been found in the zip input
 function showZipError() {
+    // Runs through all the possible validity issues and resets the validity if there are none
     if (zip.validity.valueMissing) {
         zip.setCustomValidity('Please enter a zip code');
     } else if (zip.validity.tooShort) {
@@ -89,18 +101,21 @@ function showZipError() {
     zip.reportValidity()
 }
 
+// After every time the user enters something into the email input, validity will be checked and reported
 email.addEventListener('input', () => {
     if (!email.checkValidity()) {
         showEmailError();
     }
 });
 
+// After every time the user enters something into the password input, validity will be checked and reported
 password.addEventListener('input', () => {
     if (!validateConstraint() || !password.checkValidity()) {
         showPasswordError();
     }
 });
 
+// After every time the user enters something into the password confirmation input, validity will be checked and reported
 confirmPassword.addEventListener('input', () => {
     if (password.value !== confirmPassword.value) {
         showConfirmPasswordError();
@@ -111,18 +126,22 @@ confirmPassword.addEventListener('input', () => {
     confirmPassword.reportValidity();
 });
 
+// After every time the user enters something into the zip input, validity will be checked and reported
 zip.addEventListener('input', () => {
     if (!zip.checkValidity()) {
         showZipError();
     }
 });
 
+// Checks for validity across the form and identifies where the validity concern is if there is one
 submitButton.addEventListener('click', () => {
     if (form.checkValidity()) {
+        // Reached if all validity has been checked and confirmed
         alert(`Form accepted!\nEmail: ${email.value}\nPassword: ${password.value}\nCountry: ${country.value}\nZip: ${zip.value}`);
         clearInput();
     }
     else{
+        // Identify where the validity concern is
         if (!email.checkValidity()) {
             showEmailError();
         } else if (!validateConstraint() || !password.checkValidity()) {
